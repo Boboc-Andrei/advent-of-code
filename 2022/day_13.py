@@ -10,8 +10,8 @@ with open("input_13.txt", 'r') as f:
         if(len(line) != 0):
             input.append(json.loads(line))
 
-for idx in range(0, len(input), 2):
-    stack = [(input[idx], input[idx+1])]
+def compare_packets(left: list|int, right: list|int) -> int:
+    stack = [(left, right)]
     
     while stack:
         left, right = stack.pop()
@@ -21,11 +21,10 @@ for idx in range(0, len(input), 2):
         if(isinstance(left, int) and isinstance(right, int)):
             if(left < right):
                 print(f"END: {left} < {right} ORDERED CORRECTLY\n")
-                right_order_counter += idx//2 + 1
-                break
+                return 1
             if(left > right):
                 print(f"END: {left} > {right} ORDERED INCORRECTLY\n")
-                break
+                return -1
         else:
             if(isinstance(left, int)): 
                 print(f"LEFT IS INT {left} -> [{left}]")
@@ -43,7 +42,30 @@ for idx in range(0, len(input), 2):
                 i += 1
             to_compare.reverse()
             stack.extend(to_compare)
-            
+    return 0
 
-
+for idx in range(0, len(input), 2):
+    if(compare_packets(input[idx], input[idx+1]) == 1):
+        right_order_counter += idx//2 + 1
+        
 print(f"sum of indexes of correct pairs: {right_order_counter}")
+
+#====================PART 2==============================
+
+separator1 = [[2]]
+separator2 = [[6]]
+separator1_rank = 1
+separator2_rank = 1
+
+if(compare_packets(separator1, separator2) == 1):
+    separator2_rank += 1
+else:
+    separator1_rank += 1
+
+for packet in input:
+    if(compare_packets(packet, separator1) == 1):
+        separator1_rank += 1
+    if(compare_packets(packet, separator2) == 1):
+        separator2_rank += 1
+
+print(f"Separator ranks: {separator1_rank} * {separator2_rank} = {separator1_rank * separator2_rank}")
