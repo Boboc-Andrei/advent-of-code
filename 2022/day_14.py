@@ -161,14 +161,11 @@ def generate_obstacles(context: SimulationContext, obstacles: list[list[list[int
         prev_col, prev_row = line[0]
         
         for col, row in line[1:]:
-            if(row == prev_row):
-                ascending = 1 if col > prev_col else -1
-                for i in range(prev_col, col + ascending , ascending):
-                    context.grid[row][i] = OBSTACLE
-            else:
-                ascending = 1 if row > prev_row else -1
-                for i in range(prev_row, row + ascending, ascending):
-                    context.grid[i][col] = OBSTACLE
+            col_ascending = 1 if col > prev_col else -1
+            row_ascending = 1 if row > prev_row else -1
+            for r in range(prev_row, row + row_ascending, row_ascending):
+                for c in range(prev_col, col + col_ascending , col_ascending):
+                    context.grid[r][c] = OBSTACLE
             prev_row, prev_col = row, col
      
 async def main():
